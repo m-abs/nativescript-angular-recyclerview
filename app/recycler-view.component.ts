@@ -21,6 +21,59 @@ import { View } from "ui/core/view";
 
 declare var android: any;
 
+let ViewHolderClass;
+const VIEW_HOLDER_VIEW_PROPERTY = "crossView";
+function ensureViewHolderClass() {
+
+  if (ViewHolderClass) {
+    return;
+  }
+
+  ViewHolderClass = android.support.v7.widget.RecyclerView.ViewHolder.extend({});
+}
+
+let RecyclerViewAdapterClass;
+const RECYCLER_VIEW_ITEM_VIEW_FACTORY_PROPERTY = "itemViewFactory";
+const RECYCLER_VIEW_NS_PROPERTY = "recyclerViewNs";
+const LIST_ITEMS_PROPERTY = "listItems";
+function ensureRecyclerViewAdapterClass() {
+
+  if (RecyclerViewAdapterClass) {
+    return;
+  }
+
+  RecyclerViewAdapterClass = android.support.v7.widget.RecyclerView.Adapter.extend({
+    onCreateViewHolder(parent/*: android.view.ViewGroup*/, viewType: number) {
+      let itemView: CrossView<any> = this[RECYCLER_VIEW_ITEM_VIEW_FACTORY_PROPERTY]();
+      this[RECYCLER_VIEW_NS_PROPERTY]._addView(itemView.ns);
+
+      let layoutParams = new android.support.v7.widget.RecyclerView.LayoutParams(
+        android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+        android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+      itemView.android.setLayoutParams(layoutParams);
+
+      ensureViewHolderClass();
+      let viewHolderInstance = new ViewHolderClass(itemView.android);
+      viewHolderInstance[VIEW_HOLDER_VIEW_PROPERTY] = itemView;
+
+      return viewHolderInstance;
+    },
+    onBindViewHolder(viewHolder/*: android.support.v7.widget.RecyclerView.ViewHolder*/, position: number) {
+      // update bindings
+      let context = viewHolder[VIEW_HOLDER_VIEW_PROPERTY].ng.context;
+      context.$implicit = this[LIST_ITEMS_PROPERTY][position];
+      context.goal = this[LIST_ITEMS_PROPERTY][position];
+
+      // ng: detect changes
+      const childChangeDetector = <ChangeDetectorRef>(viewHolder[VIEW_HOLDER_VIEW_PROPERTY].ng);
+      childChangeDetector.detectChanges();
+    },
+    getItemCount() {
+      return this[LIST_ITEMS_PROPERTY].length;
+    }
+  });
+}
+
 @Component({
   selector: "recycler-view-list-android",
   template: `
@@ -51,6 +104,8 @@ export class RecyclerViewListComponent implements AfterContentInit {
 
   private recyclerViewList: RecyclerView;
 
+  constructor(private element: ElementRef) { }
+
   ngAfterContentInit() {
     let context = application.android.context;
     this.recyclerViewList = new RecyclerView();
@@ -61,50 +116,41 @@ export class RecyclerViewListComponent implements AfterContentInit {
   }
 
   private createRecyclerViewAdapter()/*: android.support.v7.widget.RecyclerView.Adapter */ {
-    let that = this;
-    let Adapter = android.support.v7.widget.RecyclerView.Adapter.extend({
-      onCreateViewHolder(parent/*: android.view.ViewGroup*/, viewType: number) {
-        let viewRef: EmbeddedViewRef<any> = that.ngLoader.createEmbeddedView(that.itemTemplate);
-        return that.createViewHolder(viewRef, that.recyclerViewList);
-      },
-      onBindViewHolder(viewHolder/*: android.support.v7.widget.RecyclerView.ViewHolder*/, position: number) {
-        that.bindViewHolder(viewHolder, position, that);
-      },
-      getItemCount() {
-        return that.listItems.length;
-      }
-    });
-    return new Adapter();
-  }
+    ensureRecyclerViewAdapterClass();
 
-  private bindViewHolder(viewHolder/*: android.support.v7.widget.RecyclerView.ViewHolder*/, position: number,ownerComponent: RecyclerViewListComponent) {
-    // update bindings
-    let context = (<any>viewHolder).ngView.context;
-    context.$implicit = ownerComponent.listItems[position];
-    context.goal = ownerComponent.listItems[position];
-
-    // ng: detect changes
-    const childChangeDetector = <ChangeDetectorRef>((<any>viewHolder).ngView);
-    childChangeDetector.detectChanges();
-  }
-
-  private createViewHolder(ngView: EmbeddedViewRef<any>, owner: RecyclerView) {
-    let nsView: View = getNsViewFromNgView(ngView);
-    (<any>owner)._addView(nsView);
-
-    let layoutParams = new android.support.v7.widget.RecyclerView.LayoutParams(
-      android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-      android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
-    nsView.android.setLayoutParams(layoutParams);
-
-    let ViewHolder = android.support.v7.widget.RecyclerView.ViewHolder.extend({});
-    let viewHolderInstance = new ViewHolder(nsView.android);
-    viewHolderInstance.ngView = ngView;
-    viewHolderInstance.nsView = nsView;
-
-    return viewHolderInstance;
+    let recyclerViewInstance = new RecyclerViewAdapterClass();
+    recyclerViewInstance[RECYCLER_VIEW_ITEM_VIEW_FACTORY_PROPERTY] = () => {
+      let ngView = this.ngLoader.createEmbeddedView(this.itemTemplate);
+      let nsView = getNsViewFromNgView(ngView);
+      return new CrossView(nsView, ngView);
+    };
+    recyclerViewInstance[RECYCLER_VIEW_NS_PROPERTY] = this.recyclerViewList;
+    recyclerViewInstance[LIST_ITEMS_PROPERTY] = this.listItems;
+    return recyclerViewInstance;
   }
 }
+
+/**
+   * Delivers Angular View and corresponding ns view as tuple
+   *
+   * @returns {[EmbeddedViewRef<any>, View]}
+   *
+   * @memberOf RecyclerViewListItemHandler
+   */
+export class CrossView<T> {
+
+  constructor(public ns: View, public ng : EmbeddedViewRef<T>){}
+
+  get android(): any /*android.view.View*/ {
+    return this.ns.android;
+  }
+
+  get ios(): any /* ios view  */ {
+    return this.ns.ios;
+  }
+}
+
+
 
 function getNsViewFromNgView<T>(ngView: EmbeddedViewRef<T>): View {
   const realViews = ngView.rootNodes.filter((node) =>
