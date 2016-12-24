@@ -54,6 +54,7 @@ export class RecyclerViewListComponent implements AfterContentInit {
     this.recyclerViewList.adapter = this.createRecyclerViewAdapter();
     this.recyclerViewList.layoutManager = new android.support.v7.widget.LinearLayoutManager(context);
 
+    // append recyclerview to visual tree programmatically
     (<StackLayout>this.nsLayout.nativeElement).addChild(this.recyclerViewList);
   }
 

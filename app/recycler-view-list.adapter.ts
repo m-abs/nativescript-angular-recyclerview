@@ -35,9 +35,13 @@ function ensureRecyclerViewAdapterClass() {
         }
 
         onCreateViewHolder(parent: android.view.ViewGroup, viewType: number) {
+            // create new view from template
             let itemView: CrossView<any> = this.itemViewFactoryFunction();
+
+            // integrate new view in ns tree, so that css, properties,.. are applied
             this.recyclerViewNs._addView(itemView.ns);
 
+            // set item height to WRAP_CONTENT so that it does not expand to whole screen
             let layoutParams = new android.support.v7.widget.RecyclerView.LayoutParams(
                 android.view.ViewGroup.LayoutParams.MATCH_PARENT,
                 android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
