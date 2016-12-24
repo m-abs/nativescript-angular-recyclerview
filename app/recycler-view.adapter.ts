@@ -1,5 +1,5 @@
-import { ChangeDetectorRef } from "@angular/core";
 import { CrossView } from "./recycler-view.component";
+import { ChangeDetectorRef } from "@angular/core";
 import { View } from "ui/core/view";
 
 let RecyclerViewHolderClass;
@@ -34,7 +34,7 @@ function ensureRecyclerViewAdapterClass() {
             return global.__native(this);
         }
 
-        onCreateViewHolder(parent/*: android.view.ViewGroup*/, viewType: number) {
+        onCreateViewHolder(parent: android.view.ViewGroup, viewType: number) {
             let itemView: CrossView<any> = this.itemViewFactoryFunction();
             this.recyclerViewNs._addView(itemView.ns);
 
@@ -48,14 +48,14 @@ function ensureRecyclerViewAdapterClass() {
             return viewHolderInstance;
         }
 
-        onBindViewHolder(viewHolder/*: android.support.v7.widget.RecyclerView.ViewHolder*/, position: number) {
+        onBindViewHolder(viewHolder: android.support.v7.widget.RecyclerView.ViewHolder, position: number) {
             // update bindings
-            let context = viewHolder.crossView.ng.context;
+            let context = (<any>viewHolder).crossView.ng.context;
             context.$implicit = this.listItems[position];
             context.goal = this.listItems[position];
 
             // ng: detect changes
-            const childChangeDetector = <ChangeDetectorRef>(viewHolder.crossView.ng);
+            const childChangeDetector = <ChangeDetectorRef>((<any>viewHolder).crossView.ng);
             childChangeDetector.detectChanges();
         }
 

@@ -1,24 +1,19 @@
-import { getRecyclerViewAdapterClass } from "./recycler-view.adapter";
 import { RecyclerView } from "./recycler-view";
+import { getRecyclerViewAdapterClass } from "./recycler-view.adapter";
 import {
-  AfterContentInit,
-  ChangeDetectorRef,
-  Component,
-  ComponentFactoryResolver,
-  ComponentRef,
-  ContentChild,
-  Directive,
-  ElementRef,
-  EmbeddedViewRef,
-  Input,
-  OnInit,
-  TemplateRef,
-  ViewChild,
-  ViewContainerRef
+    AfterContentInit,
+    Component,
+    ContentChild,
+    ElementRef,
+    EmbeddedViewRef,
+    Input,
+    TemplateRef,
+    ViewChild,
+    ViewContainerRef
 } from "@angular/core";
-import { StackLayout } from "ui/layouts/stack-layout";
 import application = require("application");
 import { View } from "ui/core/view";
+import { StackLayout } from "ui/layouts/stack-layout";
 
 @Component({
   selector: "recycler-view-list-android",
@@ -50,8 +45,6 @@ export class RecyclerViewListComponent implements AfterContentInit {
 
   private recyclerViewList: RecyclerView;
 
-  constructor() { }
-
   ngAfterContentInit() {
     let context = application.android.context;
     this.recyclerViewList = new RecyclerView();
@@ -61,7 +54,7 @@ export class RecyclerViewListComponent implements AfterContentInit {
     (<StackLayout>this.nsLayout.nativeElement).addChild(this.recyclerViewList);
   }
 
-  private createRecyclerViewAdapter()/*: android.support.v7.widget.RecyclerView.Adapter */ {
+  private createRecyclerViewAdapter(): android.support.v7.widget.RecyclerView.Adapter  {
     let RecyclerViewAdapter  = getRecyclerViewAdapterClass();
     
     let itemViewFactoryFunction = () => {
@@ -85,7 +78,7 @@ export class CrossView<T> {
 
   constructor(public ns: View, public ng : EmbeddedViewRef<T>){}
 
-  get android(): any /*android.view.View*/ {
+  get android(): android.view.View {
     return this.ns.android;
   }
 

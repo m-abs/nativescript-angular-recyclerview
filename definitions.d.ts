@@ -9,7 +9,9 @@ declare namespace android {
             }
         }
         class ViewGroup {}
-        class View {}
+        class View {
+            setLayoutParams
+        }
     }
 
     namespace support.v7.widget {
