@@ -1,6 +1,6 @@
 import { CrossViewFactory } from "./cross-view.factory";
-import { RecyclerView } from "./recycler-view";
-import { getRecyclerViewAdapterClass } from "./recycler-view.adapter";
+import { RecyclerView } from "./recycler.view";
+import { getRecyclerViewAdapterClass } from "./recycler-view-list.adapter";
 import {
     AfterContentInit,
     Component,

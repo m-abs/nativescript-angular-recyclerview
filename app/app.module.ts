@@ -4,7 +4,7 @@ import { NativeScriptModule } from "nativescript-angular/platform";
 import { NativeScriptRouterModule } from "nativescript-angular/router";
 
 import { ItemsComponent } from "./items.component";
-import { RecyclerViewListComponent } from "./recycler-view.component";
+import { RecyclerViewListComponent } from "./recycler-view-list.component";
 import { NgModule, NO_ERRORS_SCHEMA } from "@angular/core";
 import { Routes } from "@angular/router";
 
