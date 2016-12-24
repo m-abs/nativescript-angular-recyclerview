@@ -1,3 +1,4 @@
+import { getRecyclerViewAdapterClass } from "./recycler-view.adapter";
 import { RecyclerView } from "./recycler-view";
 import {
   AfterContentInit,
@@ -18,61 +19,6 @@ import {
 import { StackLayout } from "ui/layouts/stack-layout";
 import application = require("application");
 import { View } from "ui/core/view";
-
-declare var android: any;
-
-let ViewHolderClass;
-const VIEW_HOLDER_VIEW_PROPERTY = "crossView";
-function ensureViewHolderClass() {
-
-  if (ViewHolderClass) {
-    return;
-  }
-
-  ViewHolderClass = android.support.v7.widget.RecyclerView.ViewHolder.extend({});
-}
-
-let RecyclerViewAdapterClass;
-const RECYCLER_VIEW_ITEM_VIEW_FACTORY_PROPERTY = "itemViewFactory";
-const RECYCLER_VIEW_NS_PROPERTY = "recyclerViewNs";
-const LIST_ITEMS_PROPERTY = "listItems";
-function ensureRecyclerViewAdapterClass() {
-
-  if (RecyclerViewAdapterClass) {
-    return;
-  }
-
-  RecyclerViewAdapterClass = android.support.v7.widget.RecyclerView.Adapter.extend({
-    onCreateViewHolder(parent/*: android.view.ViewGroup*/, viewType: number) {
-      let itemView: CrossView<any> = this[RECYCLER_VIEW_ITEM_VIEW_FACTORY_PROPERTY]();
-      this[RECYCLER_VIEW_NS_PROPERTY]._addView(itemView.ns);
-
-      let layoutParams = new android.support.v7.widget.RecyclerView.LayoutParams(
-        android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-        android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
-      itemView.android.setLayoutParams(layoutParams);
-
-      ensureViewHolderClass();
-      let viewHolderInstance = new ViewHolderClass(itemView.android);
-      viewHolderInstance[VIEW_HOLDER_VIEW_PROPERTY] = itemView;
-
-      return viewHolderInstance;
-    },
-    onBindViewHolder(viewHolder/*: android.support.v7.widget.RecyclerView.ViewHolder*/, position: number) {
-      // update bindings
-      let context = viewHolder[VIEW_HOLDER_VIEW_PROPERTY].ng.context;
-      context.$implicit = this[LIST_ITEMS_PROPERTY][position];
-      context.goal = this[LIST_ITEMS_PROPERTY][position];
-
-      // ng: detect changes
-      const childChangeDetector = <ChangeDetectorRef>(viewHolder[VIEW_HOLDER_VIEW_PROPERTY].ng);
-      childChangeDetector.detectChanges();
-    },
-    getItemCount() {
-      return this[LIST_ITEMS_PROPERTY].length;
-    }
-  });
-}
 
 @Component({
   selector: "recycler-view-list-android",
@@ -104,7 +50,7 @@ export class RecyclerViewListComponent implements AfterContentInit {
 
   private recyclerViewList: RecyclerView;
 
-  constructor(private element: ElementRef) { }
+  constructor() { }
 
   ngAfterContentInit() {
     let context = application.android.context;
@@ -116,17 +62,15 @@ export class RecyclerViewListComponent implements AfterContentInit {
   }
 
   private createRecyclerViewAdapter()/*: android.support.v7.widget.RecyclerView.Adapter */ {
-    ensureRecyclerViewAdapterClass();
-
-    let recyclerViewInstance = new RecyclerViewAdapterClass();
-    recyclerViewInstance[RECYCLER_VIEW_ITEM_VIEW_FACTORY_PROPERTY] = () => {
+    let RecyclerViewAdapter  = getRecyclerViewAdapterClass();
+    
+    let itemViewFactoryFunction = () => {
       let ngView = this.ngLoader.createEmbeddedView(this.itemTemplate);
       let nsView = getNsViewFromNgView(ngView);
       return new CrossView(nsView, ngView);
     };
-    recyclerViewInstance[RECYCLER_VIEW_NS_PROPERTY] = this.recyclerViewList;
-    recyclerViewInstance[LIST_ITEMS_PROPERTY] = this.listItems;
-    return recyclerViewInstance;
+
+    return new RecyclerViewAdapter(itemViewFactoryFunction, this.recyclerViewList, this.listItems);
   }
 }
 
@@ -149,8 +93,6 @@ export class CrossView<T> {
     return this.ns.ios;
   }
 }
-
-
 
 function getNsViewFromNgView<T>(ngView: EmbeddedViewRef<T>): View {
   const realViews = ngView.rootNodes.filter((node) =>
