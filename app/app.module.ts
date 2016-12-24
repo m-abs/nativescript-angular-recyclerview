@@ -1,4 +1,3 @@
-import { OtherComponent } from "./other.component";
 import { HomeComponent } from "./home.component";
 import { NativeScriptModule } from "nativescript-angular/platform";
 import { NativeScriptRouterModule } from "nativescript-angular/router";
@@ -13,8 +12,7 @@ import { AppComponent } from "./app.component";
 const routes: Routes = [
     { path: "", redirectTo: "/home", pathMatch: "full" },
     { path: "items", component: ItemsComponent },
-    { path: "home", component: HomeComponent },
-    { path: "other", component: OtherComponent },
+    { path: "home", component: HomeComponent }
 ];
 
 @NgModule({
@@ -22,8 +20,7 @@ const routes: Routes = [
         AppComponent,
         RecyclerViewListComponent,
         ItemsComponent,
-        HomeComponent,
-        OtherComponent
+        HomeComponent
     ],
     bootstrap: [AppComponent],
     imports: [
