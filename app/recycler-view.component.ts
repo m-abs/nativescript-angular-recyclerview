@@ -49,7 +49,7 @@ export class RecyclerViewListComponent implements AfterContentInit {
   constructor(private crossViewFactory : CrossViewFactory){}
 
   ngAfterContentInit() {
-    let context = application.android.context;
+    let context = application.android.foregroundActivity;
     this.recyclerViewList = new RecyclerView();
     this.recyclerViewList.adapter = this.createRecyclerViewAdapter();
     this.recyclerViewList.layoutManager = new android.support.v7.widget.LinearLayoutManager(context);
