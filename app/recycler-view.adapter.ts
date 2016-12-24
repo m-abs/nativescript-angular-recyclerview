@@ -1,4 +1,4 @@
-import { CrossView } from "./recycler-view.component";
+import { CrossView } from "./cross-view.factory";
 import { ChangeDetectorRef } from "@angular/core";
 import { View } from "ui/core/view";
 

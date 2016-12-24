@@ -1,3 +1,4 @@
+import { CrossViewFactory } from "./cross-view.factory";
 import { RecyclerView } from "./recycler-view";
 import { getRecyclerViewAdapterClass } from "./recycler-view.adapter";
 import {
@@ -45,6 +46,8 @@ export class RecyclerViewListComponent implements AfterContentInit {
 
   private recyclerViewList: RecyclerView;
 
+  constructor(private crossViewFactory : CrossViewFactory){}
+
   ngAfterContentInit() {
     let context = application.android.context;
     this.recyclerViewList = new RecyclerView();
@@ -59,43 +62,9 @@ export class RecyclerViewListComponent implements AfterContentInit {
     
     let itemViewFactoryFunction = () => {
       let ngView = this.ngLoader.createEmbeddedView(this.itemTemplate);
-      let nsView = getNsViewFromNgView(ngView);
-      return new CrossView(nsView, ngView);
+      return this.crossViewFactory.createFromNgView(ngView);
     };
 
     return new RecyclerViewAdapter(itemViewFactoryFunction, this.recyclerViewList, this.listItems);
-  }
-}
-
-/**
-   * Delivers Angular View and corresponding ns view as tuple
-   *
-   * @returns {[EmbeddedViewRef<any>, View]}
-   *
-   * @memberOf RecyclerViewListItemHandler
-   */
-export class CrossView<T> {
-
-  constructor(public ns: View, public ng : EmbeddedViewRef<T>){}
-
-  get android(): android.view.View {
-    return this.ns.android;
-  }
-
-  get ios(): any /* ios view  */ {
-    return this.ns.ios;
-  }
-}
-
-function getNsViewFromNgView<T>(ngView: EmbeddedViewRef<T>): View {
-  const realViews = ngView.rootNodes.filter((node) =>
-    node.nodeName && node.nodeName !== "#text");
-
-  if (realViews.length === 0) {
-    throw new Error("No suitable views found in list template!");
-  } else if (realViews.length > 1) {
-    throw new Error("More than one view found in list template!");
-  } else {
-    return realViews[0];
   }
 }

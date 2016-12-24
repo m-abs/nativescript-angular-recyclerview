@@ -1,3 +1,4 @@
+import { CrossViewFactory } from "./cross-view.factory";
 import { HomeComponent } from "./home.component";
 import { NativeScriptModule } from "nativescript-angular/platform";
 import { NativeScriptRouterModule } from "nativescript-angular/router";
@@ -30,6 +31,9 @@ const routes: Routes = [
     ],
     exports: [
         NativeScriptRouterModule
+    ],
+    providers: [
+        CrossViewFactory
     ],
     schemas: [NO_ERRORS_SCHEMA]
 })
