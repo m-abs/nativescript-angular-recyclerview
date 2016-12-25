@@ -1,6 +1,6 @@
 import { CrossViewFactory } from "./cross-view.factory";
 import { RecyclerView } from "./recycler.view";
-import { getRecyclerViewAdapterClass } from "./recycler-view-list.adapter";
+import { getRecyclerViewListAdapterClass } from "./recycler-view-list.adapter";
 import {
     AfterContentInit,
     Component,
@@ -59,13 +59,13 @@ export class RecyclerViewListComponent implements AfterContentInit {
   }
 
   private createRecyclerViewAdapter(): android.support.v7.widget.RecyclerView.Adapter  {
-    let RecyclerViewAdapter  = getRecyclerViewAdapterClass();
+    let RecyclerViewListAdapter  = getRecyclerViewListAdapterClass();
     
     let itemViewFactoryFunction = () => {
       let ngView = this.ngLoader.createEmbeddedView(this.itemTemplate);
       return this.crossViewFactory.createFromNgView(ngView);
     };
 
-    return new RecyclerViewAdapter(itemViewFactoryFunction, this.recyclerViewList, this.listItems);
+    return new RecyclerViewListAdapter(itemViewFactoryFunction, this.recyclerViewList, this.listItems);
   }
 }

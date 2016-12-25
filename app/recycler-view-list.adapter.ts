@@ -2,16 +2,16 @@ import { CrossView } from "./cross-view.factory";
 import { ChangeDetectorRef } from "@angular/core";
 import { View } from "ui/core/view";
 
-type ExtendedViewHolderType = android.support.v7.widget.RecyclerView.ViewHolder & {crossView: CrossView<any>};
+type CrossViewHolderType = android.support.v7.widget.RecyclerView.ViewHolder & {crossView: CrossView<any>};
 
-let ExtendedViewHolderClass : new (crossView: CrossView<any>) => ExtendedViewHolderType;
-function ensureExtendedViewHolderClass() {
+let CrossViewHolderClass : new (crossView: CrossView<any>) => CrossViewHolderType;
+function ensureCrossViewHolderClass() {
 
-    if (ExtendedViewHolderClass) {
+    if (CrossViewHolderClass) {
         return;
     }
 
-    class ExtendedViewHolder extends android.support.v7.widget.RecyclerView.ViewHolder {
+    class CrossViewHolder extends android.support.v7.widget.RecyclerView.ViewHolder {
 
         constructor(public crossView: CrossView<any>) {
             super(crossView.android);
@@ -19,17 +19,17 @@ function ensureExtendedViewHolderClass() {
         }
     }
 
-    ExtendedViewHolderClass = ExtendedViewHolder;
+    CrossViewHolderClass = CrossViewHolder;
 }
 
-let RecyclerViewAdapterClass : new (itemViewFactoryFunction: () => CrossView<any>, recyclerViewNs: View, listItems: any[]) => android.support.v7.widget.RecyclerView.Adapter;
-function ensureRecyclerViewAdapterClass() {
+let RecyclerViewListAdapterClass : new (itemViewFactoryFunction: () => CrossView<any>, recyclerViewNs: View, listItems: any[]) => android.support.v7.widget.RecyclerView.Adapter;
+function ensureRecyclerViewListAdapterClass() {
 
-    if (RecyclerViewAdapterClass) {
+    if (RecyclerViewListAdapterClass) {
         return;
     }
 
-    class RecyclerViewAdapter extends android.support.v7.widget.RecyclerView.Adapter {
+    class RecyclerViewListAdapter extends android.support.v7.widget.RecyclerView.Adapter {
         constructor(private itemViewFactoryFunction: () => CrossView<any>, private recyclerViewNs: View, private listItems: any[]) {
             super();
             return global.__native(this);
@@ -48,12 +48,12 @@ function ensureRecyclerViewAdapterClass() {
                 android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
             itemView.android.setLayoutParams(layoutParams);
 
-            ensureExtendedViewHolderClass();
-            let viewHolderInstance = new ExtendedViewHolderClass(itemView);
+            ensureCrossViewHolderClass();
+            let viewHolderInstance = new CrossViewHolderClass(itemView);
             return viewHolderInstance;
         }
 
-        onBindViewHolder(viewHolder: ExtendedViewHolderType, position: number) {
+        onBindViewHolder(viewHolder: CrossViewHolderType, position: number) {
             // update bindings
             let context = viewHolder.crossView.ng.context;
             context.$implicit = this.listItems[position];
@@ -69,10 +69,10 @@ function ensureRecyclerViewAdapterClass() {
         }
     }
 
-    RecyclerViewAdapterClass = RecyclerViewAdapter;
+    RecyclerViewListAdapterClass = RecyclerViewListAdapter;
 }
 
-export function getRecyclerViewAdapterClass() {
-    ensureRecyclerViewAdapterClass();
-    return RecyclerViewAdapterClass;
+export function getRecyclerViewListAdapterClass() {
+    ensureRecyclerViewListAdapterClass();
+    return RecyclerViewListAdapterClass;
 }
