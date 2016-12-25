@@ -1,16 +1,16 @@
-import { CrossViewFactory } from "./cross-view.factory";
+import { CrossView, CrossViewFactory } from "./cross-view.factory";
 import { RecyclerView } from "./recycler.view";
-import { getRecyclerViewListAdapterClass } from "./recycler-view-list.adapter";
+import { CrossViewHolderType, getRecyclerViewListAdapterClass } from "./recycler-view-list.adapter";
 import {
-    AfterContentInit,
-    Component,
-    ContentChild,
-    ElementRef,
-    EmbeddedViewRef,
-    Input,
-    TemplateRef,
-    ViewChild,
-    ViewContainerRef
+  AfterContentInit,
+  Component,
+  ContentChild,
+  ElementRef,
+  EmbeddedViewRef,
+  Input,
+  TemplateRef,
+  ViewChild,
+  ViewContainerRef
 } from "@angular/core";
 import application = require("application");
 import { View } from "ui/core/view";
@@ -46,7 +46,7 @@ export class RecyclerViewListComponent implements AfterContentInit {
 
   private recyclerViewList: RecyclerView;
 
-  constructor(private crossViewFactory : CrossViewFactory){}
+  constructor(private crossViewFactory: CrossViewFactory) { }
 
   ngAfterContentInit() {
     let context = application.android.foregroundActivity;
@@ -58,14 +58,19 @@ export class RecyclerViewListComponent implements AfterContentInit {
     (<StackLayout>this.nsLayout.nativeElement).addChild(this.recyclerViewList);
   }
 
-  private createRecyclerViewAdapter(): android.support.v7.widget.RecyclerView.Adapter  {
-    let RecyclerViewListAdapter  = getRecyclerViewListAdapterClass();
-    
+  private createRecyclerViewAdapter(): android.support.v7.widget.RecyclerView.Adapter {
+    let RecyclerViewListAdapterClass = getRecyclerViewListAdapterClass();
+
     let itemViewFactoryFunction = () => {
       let ngView = this.ngLoader.createEmbeddedView(this.itemTemplate);
-      return this.crossViewFactory.createFromNgView(ngView);
+      let crossView = this.crossViewFactory.createFromNgView(ngView);
+
+      // integrate new view in ns tree, so that css, properties,.. are applied and view is attached to android
+      this.recyclerViewList._addView(crossView.ns);
+
+      return crossView;
     };
 
-    return new RecyclerViewListAdapter(itemViewFactoryFunction, this.recyclerViewList, this.listItems);
+    return new RecyclerViewListAdapterClass(itemViewFactoryFunction, this.listItems);
   }
 }

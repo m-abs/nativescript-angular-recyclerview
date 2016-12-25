@@ -2,9 +2,14 @@ import { CrossView } from "./cross-view.factory";
 import { ChangeDetectorRef } from "@angular/core";
 import { View } from "ui/core/view";
 
-type CrossViewHolderType = android.support.v7.widget.RecyclerView.ViewHolder & {crossView: CrossView<any>};
+export type CrossViewHolderType = android.support.v7.widget.RecyclerView.ViewHolder & { crossView: CrossView<any> };
 
-let CrossViewHolderClass : new (crossView: CrossView<any>) => CrossViewHolderType;
+export function getRecyclerViewListAdapterClass() {
+    ensureRecyclerViewListAdapterClass();
+    return RecyclerViewListAdapterClass;
+}
+
+let CrossViewHolderClass: new (crossView: CrossView<any>) => CrossViewHolderType;
 function ensureCrossViewHolderClass() {
 
     if (CrossViewHolderClass) {
@@ -12,7 +17,7 @@ function ensureCrossViewHolderClass() {
     }
 
     class CrossViewHolder extends android.support.v7.widget.RecyclerView.ViewHolder {
-
+        
         constructor(public crossView: CrossView<any>) {
             super(crossView.android);
             return global.__native(this);
@@ -22,7 +27,7 @@ function ensureCrossViewHolderClass() {
     CrossViewHolderClass = CrossViewHolder;
 }
 
-let RecyclerViewListAdapterClass : new (itemViewFactoryFunction: () => CrossView<any>, recyclerViewNs: View, listItems: any[]) => android.support.v7.widget.RecyclerView.Adapter;
+let RecyclerViewListAdapterClass: new (itemViewFactoryFunction: () => CrossView<any>, listItems: any[]) => android.support.v7.widget.RecyclerView.Adapter;
 function ensureRecyclerViewListAdapterClass() {
 
     if (RecyclerViewListAdapterClass) {
@@ -30,7 +35,7 @@ function ensureRecyclerViewListAdapterClass() {
     }
 
     class RecyclerViewListAdapter extends android.support.v7.widget.RecyclerView.Adapter {
-        constructor(private itemViewFactoryFunction: () => CrossView<any>, private recyclerViewNs: View, private listItems: any[]) {
+        constructor(private itemViewFactoryFunction: () => CrossView<any>, private listItems: any[]) {
             super();
             return global.__native(this);
         }
@@ -39,9 +44,6 @@ function ensureRecyclerViewListAdapterClass() {
             // create new view from template
             let itemView: CrossView<any> = this.itemViewFactoryFunction();
 
-            // integrate new view in ns tree, so that css, properties,.. are applied
-            this.recyclerViewNs._addView(itemView.ns);
-
             // set item height to WRAP_CONTENT so that it does not expand to whole screen
             let layoutParams = new android.support.v7.widget.RecyclerView.LayoutParams(
                 android.view.ViewGroup.LayoutParams.MATCH_PARENT,
@@ -49,8 +51,7 @@ function ensureRecyclerViewListAdapterClass() {
             itemView.android.setLayoutParams(layoutParams);
 
             ensureCrossViewHolderClass();
-            let viewHolderInstance = new CrossViewHolderClass(itemView);
-            return viewHolderInstance;
+            return new CrossViewHolderClass(itemView);
         }
 
         onBindViewHolder(viewHolder: CrossViewHolderType, position: number) {
@@ -70,9 +71,4 @@ function ensureRecyclerViewListAdapterClass() {
     }
 
     RecyclerViewListAdapterClass = RecyclerViewListAdapter;
-}
-
-export function getRecyclerViewListAdapterClass() {
-    ensureRecyclerViewListAdapterClass();
-    return RecyclerViewListAdapterClass;
 }
