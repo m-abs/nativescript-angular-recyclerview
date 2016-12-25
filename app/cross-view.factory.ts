@@ -35,7 +35,7 @@ export class CrossView<T> {
 
   constructor(public ns: View, public ng : EmbeddedViewRef<T>){}
 
-  get android(): any /*android.view.View*/ {
+  get android(): android.view.View {
     return this.ns.android;
   }
 
