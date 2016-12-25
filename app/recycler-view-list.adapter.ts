@@ -2,14 +2,16 @@ import { CrossView } from "./cross-view.factory";
 import { ChangeDetectorRef } from "@angular/core";
 import { View } from "ui/core/view";
 
-let RecyclerViewHolderClass;
-function ensureRecyclerViewHolderClass() {
+type ExtendedViewHolderType = android.support.v7.widget.RecyclerView.ViewHolder & {crossView: CrossView<any>};
 
-    if (RecyclerViewHolderClass) {
+let ExtendedViewHolderClass : new (crossView: CrossView<any>) => ExtendedViewHolderType;
+function ensureExtendedViewHolderClass() {
+
+    if (ExtendedViewHolderClass) {
         return;
     }
 
-    class RecyclerViewHolder extends android.support.v7.widget.RecyclerView.ViewHolder {
+    class ExtendedViewHolder extends android.support.v7.widget.RecyclerView.ViewHolder {
 
         constructor(public crossView: CrossView<any>) {
             super(crossView.android);
@@ -17,11 +19,10 @@ function ensureRecyclerViewHolderClass() {
         }
     }
 
-    RecyclerViewHolderClass = RecyclerViewHolder;
+    ExtendedViewHolderClass = ExtendedViewHolder;
 }
 
-
-let RecyclerViewAdapterClass;
+let RecyclerViewAdapterClass : new (itemViewFactoryFunction: () => CrossView<any>, recyclerViewNs: View, listItems: any[]) => android.support.v7.widget.RecyclerView.Adapter;
 function ensureRecyclerViewAdapterClass() {
 
     if (RecyclerViewAdapterClass) {
@@ -47,19 +48,19 @@ function ensureRecyclerViewAdapterClass() {
                 android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
             itemView.android.setLayoutParams(layoutParams);
 
-            ensureRecyclerViewHolderClass();
-            let viewHolderInstance = new RecyclerViewHolderClass(itemView);
+            ensureExtendedViewHolderClass();
+            let viewHolderInstance = new ExtendedViewHolderClass(itemView);
             return viewHolderInstance;
         }
 
-        onBindViewHolder(viewHolder: android.support.v7.widget.RecyclerView.ViewHolder, position: number) {
+        onBindViewHolder(viewHolder: ExtendedViewHolderType, position: number) {
             // update bindings
-            let context = (<any>viewHolder).crossView.ng.context;
+            let context = viewHolder.crossView.ng.context;
             context.$implicit = this.listItems[position];
             context.goal = this.listItems[position];
 
             // ng: detect changes
-            const childChangeDetector = <ChangeDetectorRef>((<any>viewHolder).crossView.ng);
+            const childChangeDetector = <ChangeDetectorRef>(<any>(viewHolder.crossView.ng));
             childChangeDetector.detectChanges();
         }
 
