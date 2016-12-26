@@ -2,8 +2,6 @@ import { Property } from "ui/core/dependency-observable";
 import { PropertyMetadata } from "ui/core/proxy";
 import { View } from "ui/core/view";
 
-declare var android : any;
-
 export class RecyclerView extends View {
 
   public static adapterProperty = new Property(
