@@ -7,7 +7,7 @@
     "url": ""
   },
   "nativescript": {
-    "id": "org.nativescript.recyclerview",
+    "id": "org.nativescript.testApp",
     "tns-android": {
       "version": "2.4.1"
     }
