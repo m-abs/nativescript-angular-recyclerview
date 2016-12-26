@@ -1,10 +1,13 @@
 {
   "description": "NativeScript Application",
-  "license": "SEE LICENSE IN <your-license-filename>",
+  "license": "MIT",
   "readme": "NativeScript Application",
-  "repository": "<fill-your-repository-here>",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
   "nativescript": {
-    "id": "org.nativescript.testApp",
+    "id": "org.nativescript.recyclerview",
     "tns-android": {
       "version": "2.4.1"
     }
