@@ -1,5 +1,5 @@
 import { CrossView, CrossViewFactory } from "./cross-view.factory";
-import { RecyclerView } from "./recycler.view-common";
+import { RecyclerView } from "./recycler-view.d";
 import { CrossViewHolderType, getRecyclerViewListAdapterClass } from "./recycler-view-list.adapter";
 import {
   AfterContentInit,
@@ -18,7 +18,7 @@ import { View } from "ui/core/view";
 import { StackLayout } from "ui/layouts/stack-layout";
 import { registerElement } from "nativescript-angular/element-registry";
 
-registerElement("recycler-view", () => require("./recycler.view").RecyclerView);
+registerElement("recycler-view", () => require("./recycler-view").RecyclerView);
 
 @Component({
   selector: "recycler-view-list",
