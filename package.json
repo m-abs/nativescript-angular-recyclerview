@@ -1,10 +1,12 @@
 {
+  "name": "nativescript-angular-recyclerview",
   "description": "NativeScript Application",
+  "version": "0.1.0",
   "license": "MIT",
   "readme": "NativeScript Application",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/flexxis/nativescript-angular-recyclerview"
   },
   "nativescript": {
     "id": "org.nativescript.testApp",
@@ -12,6 +14,23 @@
       "version": "2.4.1"
     }
   },
+  "keywords": [
+    "NativeScript",
+    "JavaScript",
+    "TypeScript",
+    "RecyclerView",
+    "Android",
+    "Sample"
+  ],
+  "author": {
+    "name": "flexxis",
+    "email": "objectartz@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/flexxis/nativescript-angular-recyclerview/issues"
+  },
+  "homepage": "https://github.com/flexxis/nativescript-angular-recyclerview",
+  "readmeFilename": "README.md",
   "dependencies": {
     "@angular/common": "2.2.1",
     "@angular/compiler": "2.2.1",
