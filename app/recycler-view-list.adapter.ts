@@ -58,7 +58,6 @@ function ensureRecyclerViewListAdapterClass() {
             // update bindings
             let context = viewHolder.crossView.ng.context;
             context.$implicit = this.listItems[position];
-            context.goal = this.listItems[position];
 
             // ng: detect changes
             const childChangeDetector = <ChangeDetectorRef>(<any>(viewHolder.crossView.ng));
