@@ -11,7 +11,7 @@
   "nativescript": {
     "id": "org.nativescript.testApp",
     "tns-android": {
-      "version": "2.4.1"
+      "version": "3.1.0"
     }
   },
   "keywords": [
@@ -32,28 +32,28 @@
   "homepage": "https://github.com/flexxis/nativescript-angular-recyclerview",
   "readmeFilename": "README.md",
   "dependencies": {
-    "@angular/common": "2.2.1",
-    "@angular/compiler": "2.2.1",
-    "@angular/core": "2.2.1",
-    "@angular/forms": "2.2.1",
-    "@angular/http": "2.2.1",
-    "@angular/platform-browser": "2.2.1",
-    "@angular/platform-browser-dynamic": "2.2.1",
-    "@angular/router": "3.2.1",
-    "nativescript-angular": "1.2.0",
-    "nativescript-theme-core": "^0.2.1",
-    "reflect-metadata": "~0.1.8",
-    "rxjs": "5.0.0-beta.12",
-    "tns-core-modules": "2.4.4"
+    "@angular/animations": "~4.2.0",
+    "@angular/common": "~4.2.0",
+    "@angular/compiler": "~4.2.0",
+    "@angular/core": "~4.2.0",
+    "@angular/forms": "~4.2.0",
+    "@angular/http": "~4.2.0",
+    "@angular/platform-browser": "~4.2.0",
+    "@angular/platform-browser-dynamic": "~4.2.0",
+    "@angular/router": "~4.2.1",
+    "nativescript-angular": "~4.2.0",
+    "nativescript-theme-core": "^1.0.4",
+    "reflect-metadata": "~0.1.10",
+    "rxjs": "^5.4.3",
+    "tns-core-modules": "^3.1.1",
+    "zone.js": "~0.8.16"
   },
   "devDependencies": {
-    "babel-traverse": "6.21.0",
-    "babel-types": "6.21.0",
-    "babylon": "6.14.1",
+    "babel-traverse": "6.26.0",
+    "babel-types": "6.26.0",
+    "babylon": "6.18.0",
     "lazy": "1.0.11",
-    "nativescript-dev-android-snapshot": "^0.*.*",
-    "nativescript-dev-typescript": "^0.3.2",
-    "typescript": "~2.0.10",
-    "zone.js": "~0.6.21"
+    "nativescript-dev-typescript": "^0.5.0",
+    "typescript": "~2.3.0"
   }
 }

@@ -62,7 +62,3 @@ export class RecyclerView extends View implements definition.RecyclerView {
     this._android = new android.support.v7.widget.RecyclerView(this._context);
   }
 }
-
-
-
-

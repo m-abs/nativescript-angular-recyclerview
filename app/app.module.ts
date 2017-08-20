@@ -1,6 +1,6 @@
 import { CrossViewFactory } from "./cross-view.factory";
 import { HomeComponent } from "./home.component";
-import { NativeScriptModule } from "nativescript-angular/platform";
+import { NativeScriptModule } from "nativescript-angular/nativescript.module";
 import { NativeScriptRouterModule } from "nativescript-angular/router";
 
 import { ItemsComponent } from "./items.component";
